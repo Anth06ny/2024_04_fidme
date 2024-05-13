@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amonteiro.a2024_04_fidme.model.PictureBean
+import com.amonteiro.a2024_04_fidme.model.WeatherAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,7 +20,9 @@ const val LONG_TEXT = """Le Lorem Ipsum est simplement du faux texte employé da
 fun main() {
     val mainViewModel  = MainViewModel()
     println("Chargement des données...")
-    mainViewModel.loadFakeDataAsync()
+
+    mainViewModel.uploadSearchText("Nice")
+    mainViewModel.loadWeatherAround()
 
     runBlocking {
         while(mainViewModel.runInProgress) {
@@ -28,6 +31,7 @@ fun main() {
     }
 
     println(mainViewModel.pictureList)
+    println("ErrorMessage = " + mainViewModel.errorMessage)
     println("Fin")
 }
 
@@ -39,10 +43,33 @@ class MainViewModel : ViewModel() {
         private set
     var runInProgress by mutableStateOf(false)
         private set
+    var errorMessage by mutableStateOf("")
+        private set
 
 //    init {//Création d'un jeu de donnée au démarrage
 //        loadFakeData()
 //    }
+
+    fun loadWeatherAround() {
+
+        runInProgress = true
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                pictureList = WeatherAPI.loadWeatherAround(searchText).map {
+                    PictureBean(
+                        it.id, it.weather.getOrNull(0)?.icon ?: "", it.name,
+                        "Il fait ${it.main.temp}° à ${it.name} avec un vent de ${it.wind.speed} m/s\n"
+                    )
+                }
+            }
+            catch(e:Exception){
+                e.printStackTrace()
+                errorMessage = e.message ?: "Une erreur est survenue"
+            }
+
+            runInProgress = false
+        }
+    }
 
     fun uploadSearchText(newText: String) {
         searchText = newText

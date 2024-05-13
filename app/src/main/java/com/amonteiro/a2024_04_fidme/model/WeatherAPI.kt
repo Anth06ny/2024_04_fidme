@@ -8,11 +8,16 @@ import okhttp3.Request
 import okhttp3.Response
 import java.io.InputStreamReader
 
+
+
+var toto :String? = "toto"
+
 fun main() {
     //Partie 2
-    val res = WeatherAPI.loadWeather("Bordeaux")
-    println("Il fait ${res.main.temp}° à ${res.name} avec un vent de ${res.wind.speed} m/s\n")
-
+    WeatherAPI.loadWeatherAround("Bordeaux").forEach {
+        println("Il fait ${it.main.temp}° à ${it.name} avec un vent de ${it.wind.speed} m/s\n")
+        println(it.weather.getOrNull(0)?.icon)
+    }
 }
 
 
@@ -24,10 +29,25 @@ object WeatherAPI {
     private val client = OkHttpClient()
     private val gson = Gson()
 
-    const val URL_API = "https://api.openweathermap.org/data/2.5/weather?appid=b80967f0a6bd10d23e44848547b26550&units=metric&lang=fr&q="
+    const val URL_API = "https://api.openweathermap.org/data/2.5"
+    const val API_KEY = "appid=b80967f0a6bd10d23e44848547b26550&units=metric&lang=fr"
+
+
+    fun loadWeatherAround(cityName: String): List<WeatherBean> {
+        val json: String = sendGet("$URL_API/find?$API_KEY&q=$cityName")
+        val list =  gson.fromJson(json, WeatherAroundResult::class.java).list
+
+        list.forEach {
+            it.weather.getOrNull(0)?.let {
+                it.icon = "https://openweathermap.org/img/wn/${ it.icon}@4x.png"
+            }
+        }
+
+        return list
+    }
 
     fun loadWeather(cityName: String): WeatherBean {
-        val json: String = sendGet(URL_API + cityName)
+        val json: String = sendGet("$URL_API/weather?$API_KEY&q=$cityName")
         return gson.fromJson(json, WeatherBean::class.java)
     }
 
@@ -82,10 +102,14 @@ object WeatherAPI {
 // Bean
 /* -------------------------------- */
 
+data class WeatherAroundResult(var list:List<WeatherBean>)
+
 data class WeatherBean(
+    var id: Int,
     var main: TempBean,
     var name: String,
-    var wind: WindBean
+    var wind: WindBean,
+    var weather : List<DescriptionBean>
 )
 
 data class TempBean(
@@ -95,3 +119,9 @@ data class TempBean(
 data class WindBean(
     var speed: Double
 )
+data class DescriptionBean(
+    var description: String,
+    var icon: String,
+    var main: String
+)
+
