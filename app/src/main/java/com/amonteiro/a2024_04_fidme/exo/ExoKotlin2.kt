@@ -1,5 +1,7 @@
 package com.amonteiro.a2024_04_fidme.exo
 
+import android.provider.SyncStateContract.Constants
+
 fun main() {
 
     var res = boulangerie(nbBag = 5) // boulangerie(0, 5, 0)
@@ -12,11 +14,13 @@ fun main() {
 
 
 
+
 }
 
 fun scanNumber(question: String) = scanText(question).toIntOrNull() ?: 0
 
 fun scanText(question: String): String {
+
     print(question)
     return readlnOrNull() ?: "-"
 }

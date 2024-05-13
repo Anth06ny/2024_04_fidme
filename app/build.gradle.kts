@@ -48,6 +48,28 @@ android {
 
 dependencies {
 
+
+    //Requete web
+    implementation("com.squareup.okhttp3:okhttp:+")
+    //Parsing JSON
+    implementation("com.google.code.gson:gson:+")
+
+    //Image URL
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
+
+    //Navigation compose
+    implementation("androidx.navigation:navigation-compose:2.+")
+
+
+    //Coroutine
+    //Utilisation générale
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:+")
+//LifeCycleScope
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.+")
+//ViewModelScope
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.+")
+
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
