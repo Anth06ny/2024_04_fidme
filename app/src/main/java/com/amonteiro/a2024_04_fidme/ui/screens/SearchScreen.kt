@@ -1,6 +1,7 @@
 package com.amonteiro.a2024_04_fidme.ui.screens
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,11 +19,16 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +49,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.amonteiro.a2024_04_fidme.R
 import com.amonteiro.a2024_04_fidme.model.PictureBean
+import com.amonteiro.a2024_04_fidme.ui.MyError
+import com.amonteiro.a2024_04_fidme.ui.MyTopBar
 import com.amonteiro.a2024_04_fidme.ui.Routes
 import com.amonteiro.a2024_04_fidme.ui.theme._2024_04_fidmeTheme
 import com.amonteiro.a2024_04_fidme.viewmodel.MainViewModel
@@ -58,8 +67,7 @@ fun SearchScreenPreview() {
     _2024_04_fidmeTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             val mainViewModel = MainViewModel()
-            mainViewModel.loadFakeData()
-            mainViewModel.uploadSearchText("BC")
+            mainViewModel.loadFakeDataWithLoadingAndError()
             SearchScreen(mainViewModel)
         }
     }
@@ -69,16 +77,49 @@ fun SearchScreenPreview() {
 fun SearchScreen(mainViewModel: MainViewModel, navHostController : NavHostController? = null) {
     Column(modifier = Modifier.padding(5.dp)) {
 
+        var favorite by rememberSaveable {
+            mutableStateOf(false)
+        }
+
+        MyTopBar(
+            title = "Recherche",
+            navHostController = navHostController,
+            //Icônes sur la barre
+            topBarActions = listOf {
+                IconButton(onClick = { favorite = !favorite }) {
+                    Icon(if(favorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favoris")
+                }
+                IconButton(onClick = {  }) {
+                    Icon(Icons.Default.LocationOn, contentDescription = "Favoris")
+                }
+            },
+
+            //Menu déroulant
+            dropDownMenuItem = listOf(
+                Triple(Icons.Filled.Clear, "Clear") {
+                    mainViewModel.clearFavorite()
+                }
+            )
+        )
+
         SearchBar(searchText = mainViewModel.searchText) {
             mainViewModel.uploadSearchText(it)
         }
+
+        MyError(errorMessage = mainViewModel.errorMessage)
+
+        AnimatedVisibility(visible = mainViewModel.runInProgress, modifier = Modifier.align(alignment = Alignment.CenterHorizontally)){
+            CircularProgressIndicator()
+        }
+
+
 
         Spacer(modifier = Modifier.height(5.dp))
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f)
         ) {
-            val filterList = mainViewModel.pictureList.filter { it.title.contains(mainViewModel.searchText) }
+            val filterList = mainViewModel.pictureList.filter { !favorite || it.favorite.value }
             items(filterList.size) {
                 PictureRowItem(
                     data = filterList[it],
@@ -102,7 +143,7 @@ fun SearchScreen(mainViewModel: MainViewModel, navHostController : NavHostContro
             }
 
             Button(
-                onClick = { mainViewModel.loadFakeData() },
+                onClick = { mainViewModel.loadWeatherAround() },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding
             ) {
                 Icon(

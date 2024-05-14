@@ -1,5 +1,7 @@
 package com.amonteiro.a2024_04_fidme.model
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import java.util.Random
 
 
@@ -12,7 +14,7 @@ fun main() {
     val r2 = RandomName()
 }
 
-data class PictureBean(val id:Int, val url: String, val title: String, val longText: String)
+data class PictureBean(val id:Int, val url: String, val title: String, val longText: String, var favorite: MutableState<Boolean> = mutableStateOf(false) )
 
 
 class RandomName {

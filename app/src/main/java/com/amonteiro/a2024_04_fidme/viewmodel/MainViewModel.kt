@@ -50,9 +50,21 @@ class MainViewModel : ViewModel() {
 //        loadFakeData()
 //    }
 
+    fun togglePicture(data : PictureBean){
+        data.favorite.value = !data.favorite.value
+//        data.favorite = !data.favorite
+//        // Déclenche l'observateur
+//        pictureList = pictureList.toList()
+    }
+
+    fun clearFavorite(){
+        pictureList.forEach { it.favorite.value = false }
+    }
+
     fun loadWeatherAround() {
 
         runInProgress = true
+        errorMessage = ""
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 pictureList = WeatherAPI.loadWeatherAround(searchText).map {
@@ -82,6 +94,13 @@ class MainViewModel : ViewModel() {
             loadFakeData()
             runInProgress = false
         }
+    }
+
+    fun loadFakeDataWithLoadingAndError() {
+        loadFakeData()
+        searchText = "BC"
+        errorMessage = "Une erreur"
+        runInProgress = true
     }
 
     fun loadFakeData() {

@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.amonteiro.a2024_04_fidme.R
+import com.amonteiro.a2024_04_fidme.ui.MyTopBar
 import com.amonteiro.a2024_04_fidme.ui.theme._2024_04_fidmeTheme
 import com.amonteiro.a2024_04_fidme.viewmodel.MainViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -62,6 +66,17 @@ fun DetailScreen(idPicture: Int, mainViewModel: MainViewModel, navHostController
 
 
         val pictureBean = mainViewModel.pictureList.firstOrNull { it.id == idPicture }
+
+        MyTopBar(
+            title = pictureBean?.title ?: "Pas de donnée",
+            navHostController = navHostController,
+            //Icônes sur la barre
+            topBarActions = listOf {
+                IconButton(onClick = { pictureBean?.let { mainViewModel.togglePicture(pictureBean)  } }) {
+                    Icon(if(pictureBean?.favorite?.value == true) Icons.Filled.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favoris")
+                }
+            }
+        )
 
 
         Text(

@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -25,58 +23,38 @@ import java.io.InputStreamReader
 //}
 
 fun main() {
-
-    runBlocking {
-        println("1")
-        launch {
-            delay(500)
-            println("2")
-        }
-
-        println("3")
-        launch {
-            delay(1000)
-            println("4")
-        }
-
-        println("5")
-    }
-
-
     val viewModel = MainViewModel()
-    viewModel.loadWeathers("Nice")
+    viewModel.loadWeathers("")
 
     while(viewModel.runInProgress) {
         Thread.sleep(500)
     }
 
-    val tempList = viewModel.weatherList
-    if (tempList != null) {
-        for (w in tempList) {
-            println("Il fait ${w.main.temp}° à ${w.name}(id=${w.id}) avec un vent de ${w.wind.speed} m/s\n")
-            println("-Description : ${w.weather.getOrNull(0)?.description}")
-            println("-Icon : ${w.weather.getOrNull(0)?.icon}")
-        }
-    }
-    if(viewModel.errorMessage.isNotBlank()) {
-        println(viewModel.errorMessage)
-    }
+    //Affichage
+    println(viewModel.dataList)
+    println(viewModel.errorMessage)
+
 }
 
 
 class MainViewModel : ViewModel() {
-    var weatherList: List<WeatherBean>? = null
+    var dataList: List<PictureBean>? = null
     var errorMessage = ""
     var runInProgress = false
 
-    fun loadWeathers(cityName: String?) {
+    fun loadWeathers(cityName: String) {
         runInProgress = true
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 if(cityName == null || cityName.length < 3){
                     throw Exception("Il faut au moins 3 caractères")
                 }
-                weatherList = WeatherAPI.loadWeathers(cityName)
+                dataList = WeatherAPI.loadWeathers(cityName).map {
+                    PictureBean(it.id, it.weather.getOrNull(0)?.icon ?: "",
+                        it.name,
+                        "Il fait ${it.main.temp}° à ${it.name}(id=${it.id}) avec un vent de ${it.wind.speed} m/s\n"
+                        )
+                }
             }
             catch (e: Exception) {
                 e.printStackTrace()
@@ -143,6 +121,8 @@ object WeatherAPI {
 /* -------------------------------- */
 // Bean
 /* -------------------------------- */
+data class PictureBean(val id:Int, val url: String, val title: String, val longText: String)
+
 
 //Objet de base retourné par l'API
 data class WeatherAroundBean(var list: List<WeatherBean>)
