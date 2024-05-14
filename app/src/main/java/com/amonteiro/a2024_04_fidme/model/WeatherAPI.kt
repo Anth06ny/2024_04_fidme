@@ -58,7 +58,11 @@ object WeatherAPI {
 
     fun loadWeather(cityName: String): WeatherBean {
         val json: String = sendGet("$URL_API/weather?$API_KEY&q=$cityName")
-        return gson.fromJson(json, WeatherBean::class.java)
+        return gson.fromJson(json, WeatherBean::class.java).apply {
+            weather.getOrNull(0)?.let {
+                it.icon = "https://openweathermap.org/img/wn/${ it.icon}@4x.png"
+            }
+        }
     }
 
     fun sendGet(url: String): String {

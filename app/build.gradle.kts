@@ -35,6 +35,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -54,7 +55,7 @@ dependencies {
     //Parsing JSON
     implementation("com.google.code.gson:gson:+")
 
-    //Image URL
+    //Image URL compose
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
     //Navigation compose
@@ -70,6 +71,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.+")
     implementation ("com.google.android.gms:play-services-location:+")
     implementation ("com.google.accompanist:accompanist-permissions:+")
+
+    //Image url
+        implementation("com.squareup.picasso:picasso:2.8")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
