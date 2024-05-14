@@ -1,5 +1,8 @@
 package com.amonteiro.a2024_04_fidme.temp
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -42,13 +45,14 @@ const val LONG_TEXT = """Le Lorem Ipsum est simplement du faux texte employé da
     de l'imprimerie depuis les années 1500"""
 
 class MainViewModel : ViewModel() {
-    var dataList: List<PictureBean>? = null
-    var errorMessage = ""
-    var runInProgress = false
+    var dataList by mutableStateOf<List<PictureBean>>(emptyList())
+    var errorMessage by mutableStateOf("")
+    var runInProgress by mutableStateOf(false)
+    var searchText by mutableStateOf("")
 
-    init {//Création d'un jeu de donnée au démarrage
-        loadFakeData()
-    }
+//    init {//Création d'un jeu de donnée au démarrage
+//        loadFakeData()
+//    }
 
     fun loadFakeData(){
         dataList = listOf(PictureBean(1, "https://picsum.photos/200", "ABCD", LONG_TEXT),
@@ -58,7 +62,7 @@ class MainViewModel : ViewModel() {
         ).shuffled() //shuffled() pour avoir un ordre différent à chaque appel
     }
 
-    fun loadWeathers(cityName: String) {
+    fun loadWeathers(cityName: String?) {
         runInProgress = true
         viewModelScope.launch(Dispatchers.Default) {
             try {
