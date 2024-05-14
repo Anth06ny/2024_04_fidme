@@ -2,4 +2,8 @@
 <resources>
 
     <style name="Theme._2024_04_fidme" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="MyTheme" parent="Theme.Material3.DayNight" >
+
+    </style>
 </resources>
