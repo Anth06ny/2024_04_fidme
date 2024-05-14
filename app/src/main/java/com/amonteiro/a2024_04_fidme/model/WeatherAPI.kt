@@ -32,6 +32,16 @@ object WeatherAPI {
     const val URL_API = "https://api.openweathermap.org/data/2.5"
     const val API_KEY = "appid=b80967f0a6bd10d23e44848547b26550&units=metric&lang=fr"
 
+    fun loadWeatherAround(lat:Double, lon:Double): List<WeatherBean> {
+        //Réaliser la requête.
+        val json: String = sendGet("https://api.openweathermap.org/data/2.5/find?lat=$lat&lon=$lon&cnt=5&appid=b80967f0a6bd10d23e44848547b26550&units=metric&lang=fr")
+
+        return gson.fromJson(json, WeatherAroundResult::class.java).list.onEach {
+            it.weather.getOrNull(0)?.let {
+                it.icon = "https://openweathermap.org/img/wn/${ it.icon}@4x.png"
+            }
+        }
+    }
 
     fun loadWeatherAround(cityName: String): List<WeatherBean> {
         val json: String = sendGet("$URL_API/find?$API_KEY&q=$cityName")

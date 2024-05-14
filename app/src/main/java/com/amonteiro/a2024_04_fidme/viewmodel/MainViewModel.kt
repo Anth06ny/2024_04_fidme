@@ -1,5 +1,6 @@
 package com.amonteiro.a2024_04_fidme.viewmodel
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amonteiro.a2024_04_fidme.model.PictureBean
 import com.amonteiro.a2024_04_fidme.model.WeatherAPI
+import com.amonteiro.a2024_04_fidme.utils.LocationUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,6 +61,36 @@ class MainViewModel : ViewModel() {
 
     fun clearFavorite(){
         pictureList.forEach { it.favorite.value = false }
+    }
+
+    fun loadWeatherAround(context: Context) {
+
+        runInProgress = true
+        errorMessage = ""
+
+        LocationUtils.getLastKnowLocationEconomyMode(context)?.addOnSuccessListener { location->
+            viewModelScope.launch(Dispatchers.Default) {
+                try {
+                    pictureList = WeatherAPI.loadWeatherAround(location.latitude, location.longitude).map {
+                        PictureBean(
+                            it.id, it.weather.getOrNull(0)?.icon ?: "", it.name,
+                            "Il fait ${it.main.temp}° à ${it.name} avec un vent de ${it.wind.speed} m/s\n"
+                        )
+                    }
+                }
+                catch(e:Exception){
+                    e.printStackTrace()
+                    errorMessage = e.message ?: "Une erreur est survenue"
+                }
+                runInProgress = false
+            }
+        }?.addOnFailureListener {
+            it.printStackTrace()
+            runInProgress = false
+            errorMessage = it.message ?: "Une erreur est survenue"
+        }
+
+
     }
 
     fun loadWeatherAround() {

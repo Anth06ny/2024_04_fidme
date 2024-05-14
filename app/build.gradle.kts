@@ -68,7 +68,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.+")
 //ViewModelScope
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.+")
-
+    implementation ("com.google.android.gms:play-services-location:+")
+    implementation ("com.google.accompanist:accompanist-permissions:+")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

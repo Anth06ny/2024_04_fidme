@@ -42,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,6 +58,9 @@ import com.amonteiro.a2024_04_fidme.viewmodel.MainViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 
 @Preview(showBackground = true, showSystemUi = true)
 @Preview(showBackground = true, showSystemUi = true, uiMode = UI_MODE_NIGHT_YES, locale = "fr")
@@ -73,6 +77,7 @@ fun SearchScreenPreview() {
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SearchScreen(mainViewModel: MainViewModel, navHostController : NavHostController? = null) {
     Column(modifier = Modifier.padding(5.dp)) {
@@ -80,6 +85,10 @@ fun SearchScreen(mainViewModel: MainViewModel, navHostController : NavHostContro
         var favorite by rememberSaveable {
             mutableStateOf(false)
         }
+
+        val locationPermissionState = rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        val context = LocalContext.current
+
 
         MyTopBar(
             title = "Recherche",
@@ -89,7 +98,14 @@ fun SearchScreen(mainViewModel: MainViewModel, navHostController : NavHostContro
                 IconButton(onClick = { favorite = !favorite }) {
                     Icon(if(favorite) Icons.Filled.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favoris")
                 }
-                IconButton(onClick = {  }) {
+                IconButton(onClick = {
+                    if (!locationPermissionState.status.isGranted) {
+                        locationPermissionState.launchPermissionRequest()
+                    }
+                    else {
+                        mainViewModel.loadWeatherAround(context)
+                    }
+                }) {
                     Icon(Icons.Default.LocationOn, contentDescription = "Favoris")
                 }
             },
