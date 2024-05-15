@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/screen11Fragment">
+
+    <fragment
+        android:id="@+id/screen11Fragment"
+        android:name="com.amonteiro.a2024_04_fidme.fragments.Screen11Fragment"
+        android:label="fragment_screen11"
+        tools:layout="@layout/fragment_screen11" >
+        <action
+            android:id="@+id/action_screen11Fragment_to_screen12Fragment"
+            app:destination="@id/screen12Fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/screen12Fragment"
+        android:name="com.amonteiro.a2024_04_fidme.fragments.Screen12Fragment"
+        android:label="fragment_screen12"
+        tools:layout="@layout/fragment_screen12" >
+        <argument
+            android:name="test"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+</navigation>

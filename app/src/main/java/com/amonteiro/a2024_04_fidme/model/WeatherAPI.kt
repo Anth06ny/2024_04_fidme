@@ -124,7 +124,9 @@ data class WeatherBean(
     var name: String,
     var wind: WindBean,
     var weather : List<DescriptionBean>
-)
+) {
+    fun print() = "Il fait ${main.temp}°"
+}
 
 data class TempBean(
     var temp: Double

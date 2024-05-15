@@ -65,6 +65,8 @@ fun DetailScreen(idPicture: Int, mainViewModel: MainViewModel, navHostController
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
 
 
+
+
         val pictureBean = mainViewModel.pictureList.firstOrNull { it.id == idPicture }
 
         MyTopBar(

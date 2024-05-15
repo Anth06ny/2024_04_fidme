@@ -11,17 +11,18 @@ import kotlinx.coroutines.launch
 class WeatherViewModel : ViewModel() {
 
     val weather = MutableLiveData<WeatherBean?>(null)
-    val errorMessage = MutableLiveData("")
+    val errorMessage = MutableLiveData<String?>(null)
     val runInProgress = MutableLiveData(false)
+    val searchText = MutableLiveData("Toulouse")
 
-    fun loadWeather(cityName: String) {
-        errorMessage.postValue("")
+    fun loadWeather() {
+        errorMessage.postValue(null)
         runInProgress.postValue( true)
         weather.postValue(null)
 
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                weather.postValue(WeatherAPI.loadWeather(cityName))
+                weather.postValue(WeatherAPI.loadWeather(searchText.value.toString()))
             }
             catch (e: Exception) {
                 e.printStackTrace()

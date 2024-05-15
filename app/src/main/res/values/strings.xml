@@ -2,4 +2,6 @@
     <string name="app_name">2024_04_fidme</string>
     <string name="bt_clear">Clear filter</string>
     <string name="bt_load">Load data</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

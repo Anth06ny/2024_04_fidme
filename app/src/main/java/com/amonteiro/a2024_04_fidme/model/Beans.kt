@@ -2,6 +2,7 @@ package com.amonteiro.a2024_04_fidme.model
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import java.io.Serializable
 import java.util.Random
 
 
@@ -83,7 +84,7 @@ class HouseBean(var color: String, width: Int, length: Int) {
 }
 
 
-data class CarBean(var marque: String? = null, var model: String? = "") {
+data class CarBean(var marque: String? = null, var model: String? = "") : Serializable {
     var couleur = ""
 
 }

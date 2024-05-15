@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -36,6 +37,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        dataBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -73,7 +75,14 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-permissions:+")
 
     //Image url
-        implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.squareup.picasso:picasso:2.8")
+
+    //Fragment
+    implementation ("androidx.navigation:navigation-ui:2.+")
+
+    implementation ("androidx.navigation:navigation-ui-ktx:2.+")
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.+")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
