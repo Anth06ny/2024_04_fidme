@@ -64,25 +64,22 @@ fun DetailScreenNoDataPreview() {
 fun DetailScreen(idPicture: Int, mainViewModel: MainViewModel, navHostController: NavHostController?) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(5.dp)) {
 
-
-
-
-        val pictureBean = mainViewModel.pictureList.firstOrNull { it.id == idPicture }
+        var pictureBean = mainViewModel.pictureList.first { it.id == idPicture }
 
         MyTopBar(
-            title = pictureBean?.title ?: "Pas de donnée",
+            title = pictureBean.title ?: "Pas de donnée",
             navHostController = navHostController,
             //Icônes sur la barre
             topBarActions = listOf {
-                IconButton(onClick = { pictureBean?.let { mainViewModel.togglePicture(pictureBean)  } }) {
-                    Icon(if(pictureBean?.favorite?.value == true) Icons.Filled.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favoris")
+                IconButton(onClick = { mainViewModel.togglePicture(pictureBean)}) {
+                    Icon(if (pictureBean.favorite.value ) Icons.Filled.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favoris")
                 }
             }
         )
 
 
         Text(
-            text = pictureBean?.title ?: "Non trouvé", fontSize = 30.sp, color = MaterialTheme.colorScheme.primary
+            text = pictureBean.title ?: "Non trouvé", fontSize = 30.sp, color = MaterialTheme.colorScheme.primary
         )
 
         GlideImage(

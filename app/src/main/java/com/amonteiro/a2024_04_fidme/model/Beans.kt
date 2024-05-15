@@ -6,7 +6,6 @@ import java.io.Serializable
 import java.util.Random
 
 
-
 var data : HouseBean? = HouseBean("Seat", 10, 12)
 
 fun main() {
@@ -15,7 +14,8 @@ fun main() {
     val r2 = RandomName()
 }
 
-data class PictureBean(val id:Int, val url: String, val title: String, val longText: String, var favorite: MutableState<Boolean> = mutableStateOf(false) )
+data class PictureBean(val id:Int, val url: String, val title: String, val longText: String,
+                       var favorite: MutableState<Boolean> = mutableStateOf(false) )
 
 
 class RandomName {

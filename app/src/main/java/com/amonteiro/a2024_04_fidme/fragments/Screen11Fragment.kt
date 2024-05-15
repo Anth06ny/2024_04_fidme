@@ -12,8 +12,11 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.amonteiro.a2024_04_fidme.R
+import com.amonteiro.a2024_04_fidme.adapter.CarListAdapter
 import com.amonteiro.a2024_04_fidme.databinding.FragmentScreen11Binding
+import com.amonteiro.a2024_04_fidme.model.CarBean
 
 
 class Screen11Fragment : Fragment(), MenuProvider {
@@ -21,7 +24,14 @@ class Screen11Fragment : Fragment(), MenuProvider {
     private var _binding: FragmentScreen11Binding? = null
     private val binding get() = _binding!!
 
-    //val model by lazy { ViewModelProvider(this)[ScreenViewModel::class.java] }
+    private val list = arrayListOf(CarBean("Seat" , "Leon"), CarBean("Seat" , "Ibiza"))
+
+    private val adapter = CarListAdapter().apply {
+        submitList(list)
+    }
+
+//    val model by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
+//    val model by lazy { ViewModelProvider(requireActivity())[MainViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +54,23 @@ class Screen11Fragment : Fragment(), MenuProvider {
             findNavController().navigate(action)
         }
 
+        binding.recyclerview.adapter = adapter
+        binding.recyclerview.layoutManager = GridLayoutManager(requireActivity(), 2)
 
 
         requireActivity().addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.STARTED)
 
         (requireActivity() as? AppCompatActivity)?.supportActionBar?.subtitle = "Nouveau sous titre"
+
+        binding.btAdd.setOnClickListener {
+            list.add(0, CarBean("Marque_${list.size}", "Model"))
+            adapter.submitList(list.toList())
+        }
+
+        binding.btDelete.setOnClickListener {
+            list.removeFirstOrNull()
+            adapter.submitList(list.toList())
+        }
 
         return binding.root
     }

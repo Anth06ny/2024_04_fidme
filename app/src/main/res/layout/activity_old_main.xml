@@ -52,6 +52,7 @@
                 android:layout_height="wrap_content"
                 android:onClick="@{()-> viewModel.loadWeather()}"
                 android:text="Load" />
+
         </LinearLayout>
 
         <ProgressBar

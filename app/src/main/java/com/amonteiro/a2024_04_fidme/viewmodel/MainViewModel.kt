@@ -56,7 +56,7 @@ class MainViewModel : ViewModel() {
         data.favorite.value = !data.favorite.value
 //        data.favorite = !data.favorite
 //        // Déclenche l'observateur
-//        pictureList = pictureList.toList()
+        pictureList = pictureList.map { it.copy() }
     }
 
     fun clearFavorite(){

@@ -7,7 +7,9 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.amonteiro.a2024_04_fidme.databinding.ActivityExoNavGraphBinding
 
 class ExoNavGraphActivity : AppCompatActivity(), MenuProvider {
@@ -28,7 +30,13 @@ class ExoNavGraphActivity : AppCompatActivity(), MenuProvider {
 
         val navController = binding.navHostFragment.findNavController()
 
-        setupActionBarWithNavController(navController)
+        //On le relie à l'ActionBar
+        binding.bottomNavigation.setupWithNavController(navController)
+
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.screen11Fragment, R.id.screen21Fragment))
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -1,5 +1,6 @@
 package com.amonteiro.a2024_04_fidme.viewmodel
 
+import android.location.Location
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ class WeatherViewModel : ViewModel() {
     val errorMessage = MutableLiveData<String?>(null)
     val runInProgress = MutableLiveData(false)
     val searchText = MutableLiveData("Toulouse")
+    val myLocation = MutableLiveData<Location?>(null)
 
     fun loadWeather() {
         errorMessage.postValue(null)
